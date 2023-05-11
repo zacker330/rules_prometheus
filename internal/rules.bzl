@@ -68,11 +68,10 @@ prometheus_rule_test = rule(
 
 def _alertmanager_route_test_impl(ctx):
   tool = ctx.toolchains["@rules_prometheus//:alertmanager_toolchain_type"].amtool
-  cmd = tool.path + " config routes test --config.file={src} --tree --verify.receivers={exp_receiver} {label_matchs}".format(
+  cmd = tool.path + " config routes test --config.file={src} --tree --verify.receivers={exp_receivers} {label_matchs}".format(
       src = shell.quote(ctx.file.src.path),
-      exp_receiver = shell.quote(ctx.attr.exp_receiver),
+      exp_receivers = ",".join([shell.quote(receiver) for receiver in ctx.attr.exp_receivers]),
       label_matchs= " ".join([shell.quote(label) for label in ctx.attr.match_labels]),
-
   )
   executable = ctx.actions.declare_file(ctx.label.name)
   ctx.actions.write(
@@ -96,9 +95,9 @@ alertmanager_route_test = rule(
     "match_labels": attr.string_list(
       doc = "labels to match receiver"
     ),
-    "exp_receiver": attr.string(
+    "exp_receivers": attr.string_list(
       mandatory = True,
-      doc = "except reciever"
+      doc = "except recievers"
 
     )
   },

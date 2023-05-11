@@ -8,7 +8,7 @@ alertmanager_config_test(
 alertmanager_route_test(
   name = "route_test",
   src = "simple.yaml",
-  exp_receiver = "team-X-pager",
+  exp_receivers = ["team-X-pager"],
   match_labels = ["service=database", "owner=team-X"]
 )
 
