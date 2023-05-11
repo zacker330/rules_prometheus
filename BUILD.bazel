@@ -1,0 +1,9 @@
+toolchain_type(
+    name = "alertmanager_toolchain_type",
+    visibility = ["//visibility:public"],
+)
+
+toolchain_type(
+    name = "prometheus_toolchain_type",
+    visibility = ["//visibility:public"],
+)
