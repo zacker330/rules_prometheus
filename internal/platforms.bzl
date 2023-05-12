@@ -5,8 +5,10 @@ def detect_host_platform(ctx):
     elif goos.startswith("windows"):
         goos = "windows"
 
-
     goarch = ctx.os.environ.get("PROCESSOR_ARCHITECTURE")
+    if goos == "darwin":
+        goarch = ctx.os.arch
+
     if goarch == "aarch64":
         goarch = "arm64"
     elif goarch == "x86_64":
