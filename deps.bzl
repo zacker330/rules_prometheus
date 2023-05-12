@@ -1,8 +1,19 @@
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
-load("//internal/prometheus:repos.bzl", "prometheus_download")
+load("//internal/prometheus:repos.bzl", "prometheus_download_rule")
 load("//internal/alertmanager:repos.bzl","alertmanager_download_rule")
 
-def prometheus_rules_dependencies():
+
+
+
+def _maybe(rule, name, **kwargs):
+    """Declares an external repository if it hasn't been declared already."""
+    if name not in native.existing_rules():
+        rule(name = name, **kwargs)
+
+
+
+
+def rules_prometheus_dependencies():
     _maybe(
         http_archive,
         name = "bazel_skylib",
@@ -13,28 +24,14 @@ def prometheus_rules_dependencies():
         sha256 = "74d544d96f4a5bb630d465ca8bbcfe231e3594e5aae57e1edbf17a6eb3ca2506",
     )
 
-def prometheus_dependencies(sha256, urls):
-    prometheus_repo_name = "prometheus_dependencies" + sha256
-    prometheus_download(
-        name = prometheus_repo_name,
-        sha256 = sha256,
-        urls = urls,
-    )
-
+def prometheus_register_toolchains(version = None, urls = None):
+    prometheus_download_rule(name = "prometheus_register_toolchains", version=version, urls=urls)
     native.register_toolchains(
-        "@"+ prometheus_repo_name +"//:toolchain",
+        "@prometheus_register_toolchains//:toolchain",
     )
-
-
-def _maybe(rule, name, **kwargs):
-    """Declares an external repository if it hasn't been declared already."""
-    if name not in native.existing_rules():
-        rule(name = name, **kwargs)
-
-
 
 def alertmanager_register_toolchains(version = None, urls = None):
-    alertmanager_download_rule(name = "alertmanager_register_toolchains", version=version,urls=urls)
+    alertmanager_download_rule(name = "alertmanager_register_toolchains", version=version, urls=urls)
     native.register_toolchains(
         "@alertmanager_register_toolchains//:toolchain",
     )
