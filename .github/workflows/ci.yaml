@@ -6,7 +6,8 @@ jobs:
     strategy:
       matrix:
         os: [macos-latest]
-        bazel_version: ["6.1.0","6.0.0","5.4.1","4.2.4"]
+        bazel_version: ["5.4.1"]
+        # bazel_version: ["6.1.0","6.0.0","5.4.1","4.2.4"]
     runs-on: ${{ matrix.os }}
     env: 
       USE_BAZEL_VERSION: ${{ matrix.bazel_version }}
