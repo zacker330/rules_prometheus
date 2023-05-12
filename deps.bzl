@@ -1,5 +1,6 @@
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
-load("//internal:repos.bzl", "alertmanager_download", "prometheus_download")
+load("//internal/prometheus:repos.bzl", "prometheus_download")
+load("//internal/alertmanager:repos.bzl","alertmanager_download_rule")
 
 def prometheus_rules_dependencies():
     _maybe(
@@ -11,19 +12,6 @@ def prometheus_rules_dependencies():
         ],
         sha256 = "74d544d96f4a5bb630d465ca8bbcfe231e3594e5aae57e1edbf17a6eb3ca2506",
     )
-
-def alertmanager_dependencies(sha256, urls):
-    alertmanager_repo_name = ("alertmanager_dependencies"  + sha256)
-    alertmanager_download(
-        name = alertmanager_repo_name,
-        sha256 = sha256,
-        urls = urls,
-    )
-
-    native.register_toolchains(
-        "@"+ alertmanager_repo_name +"//:toolchain",
-    )
-
 
 def prometheus_dependencies(sha256, urls):
     prometheus_repo_name = "prometheus_dependencies" + sha256
@@ -42,3 +30,22 @@ def _maybe(rule, name, **kwargs):
     """Declares an external repository if it hasn't been declared already."""
     if name not in native.existing_rules():
         rule(name = name, **kwargs)
+
+
+
+def alertmanager_register_toolchains(version = None, urls = None):
+    alertmanager_download_rule(name = "alertmanager_register_toolchains", version=version,urls=urls)
+    native.register_toolchains(
+        "@alertmanager_register_toolchains//:toolchain",
+    )
+
+
+    # _alertmanager_toolchains(
+    #     name = name + "_toolchains",
+    #     alertmanager_repo = name,
+    #     sdk_version = kwargs.get("version"),
+    #     goos = kwargs.get("goos"),
+    #     goarch = kwargs.get("goarch"),
+    # )
+    # if register_toolchains:
+    #     _register_toolchains(name)
