@@ -1,0 +1,21 @@
+name: build and test
+run-name: ${{ github.actor }} run CI/CD
+on: [push]
+jobs:
+  os_matrix:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        bazel_version: ["6.1","6.0","5.4.1","4.2.4"]
+    runs-on: ${{ matrix.os }}
+    env: 
+      USE_BAZEL_VERSION: ${{ matrix.bazel_version }}
+    steps:
+    - uses: actions/checkout@v3
+    - uses: bazelbuild/setup-bazelisk@v2
+    - name: Mount bazel cache  # Optional
+      uses: actions/cache@v3
+      with:
+        path: "~/.cache/${{ matrix.os }}-bazel"
+        key: rules_prometheus_${{ matrix.os }}
+    - run: bazel build //... && bazel test //...
