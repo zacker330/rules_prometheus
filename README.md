@@ -1,3 +1,7 @@
+# Overview
+
+The aim of the rules are for validating or testing the configurations of Prometheus and Alertmanger via promtool and amtool.
+
 # Installation
 
 ```python
