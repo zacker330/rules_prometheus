@@ -26,24 +26,24 @@ def rules_prometheus_dependencies():
 
 def prometheus_register_toolchains(version = None, urls = None):
     for key in DEFAULT_AVAILABLE_PROMETHEUS_BINARIES:
-        if key[0] != version:
-            pass
-        platform = key[1]
-        name = "prometheus_register_toolchains_" + platform
-        prometheus_download_rule(name = name, version=version, urls=urls)
-        native.register_toolchains(
-            "@"+ name +"//:toolchain",
-        )
+        if key[0] == version:
+            platform = key[1]
+            os, _, arch = platform.partition("-")
+            name = "prometheus_register_toolchains_" + platform
+            prometheus_download_rule(name = name, version=version, urls=urls, os = os, arch = arch)
+            native.register_toolchains(
+                "@"+ name +"//:toolchain",
+            )
 
 def alertmanager_register_toolchains(version = None, urls = None):
     for key in DEFAULT_AVAILABLE_ALERTMANAGER_BINARIES:
-        if key[0] != version:
-            pass
-        platform = key[1]
-        name = "alertmanager_register_toolchains_" + platform
+        if key[0] == version:
+            platform = key[1]
+            os, _, arch = platform.partition("-")
+            name = "alertmanager_register_toolchains_" + platform
 
-        alertmanager_download_rule(name = name, version=version, urls=urls)
-        native.register_toolchains(
-            "@"+ name +"//:toolchain",
-        )
+            alertmanager_download_rule(name = name, version=version, urls=urls, os=os, arch=arch)
+            native.register_toolchains(
+                "@"+ name +"//:toolchain",
+            )
 

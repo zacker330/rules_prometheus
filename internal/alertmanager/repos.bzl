@@ -1,24 +1,11 @@
 load("//internal:platforms.bzl","detect_host_platform")
 load("//internal/alertmanager:alertmanager_versions.bzl", "DEFAULT_AVAILABLE_ALERTMANAGER_BINARIES")
+load("//internal:platforms.bzl", "BAZEL_OS_CONSTRAINTS", "BAZEL_ARCH_CONSTRAINTS")
 
 
 def _alertmanager_build_file(ctx, platform, version):
     os, _, arch = platform.partition("-")
-    if os == "darwin":
-        os_constraint = "@platforms//os:osx"
-    elif os == "linux":
-        os_constraint = "@platforms//os:linux"
-    elif os == "windows":
-        os_constraint = "@platforms//os:windows"
-    else:
-        fail("unsupported os: " + os)
-    if arch == "amd64":
-        arch_constraint = "@platforms//cpu:x86_64"
-    elif arch == "arm64":
-        arch_constraint = "@platforms//cpu:arm64"
-    else:
-        fail("unsupported arch: " + arch)
-    constraints = [os_constraint, arch_constraint]
+    constraints = [BAZEL_OS_CONSTRAINTS[os], BAZEL_ARCH_CONSTRAINTS[arch]]
     constraint_str = ",\n        ".join(['"%s"' % c for c in constraints])
     ctx.template(
         "BUILD.bazel",
@@ -70,14 +57,7 @@ def _format_url(version, platform, url):
     return whole_url
 
 def _alertmanager_download_rule_impl(ctx):
-    if not ctx.attr.os and not ctx.attr.arch:
-        os, arch = detect_host_platform(ctx)
-    else:
-        if not ctx.attr.os:
-            fail("arch set but os not set")
-        if not ctx.attr.arch:
-            fail("os set but arch not set")
-        os, arch = ctx.attr.os, ctx.attr.arch
+    os, arch = ctx.attr.os, ctx.attr.arch
     platform = os + "-" + arch
 
     version = ctx.attr.version
