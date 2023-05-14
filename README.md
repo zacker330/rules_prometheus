@@ -2,8 +2,17 @@
 
 ```python
 
+load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
+
+http_archive(
+    name = "io_bazel_rules_prometheus",
+    sha256 = "<please have a look at Release>",
+    urls = [ "<please have a look at Release>" ],
+)
+
+load("@io_bazel_rules_prometheus//:deps.bzl", "rules_prometheus_dependencies", "prometheus_register_toolchains", "alertmanager_register_toolchains")
 rules_prometheus_dependencies()
-prometheus_register_toolchains(version = "2.43.1")
+prometheus_register_toolchains(version = "2.43.1") 
 alertmanager_register_toolchains(version = "0.24.0")
 
 ```
@@ -13,6 +22,7 @@ alertmanager_register_toolchains(version = "0.24.0")
 
 
 ```python 
+
 load("@io_bazel_rules_prometheus//:def.bzl","alertmanager_config_test", "prometheus_rule_test", "alertmanager_route_test")
 
 alertmanager_config_test(
