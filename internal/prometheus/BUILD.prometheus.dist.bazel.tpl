@@ -1,7 +1,7 @@
 # This template is used by go_download to generate a build file for
 # a downloaded Go distribution.
 
-load("@rules_prometheus//:def.bzl", "prometheus_toolchain")
+load("@io_bazel_rules_prometheus//:def.bzl", "prometheus_toolchain")
 
 # tools contains executable files that are part of the toolchain.
 filegroup(
@@ -24,5 +24,5 @@ toolchain(
         {target_constraints},
     ],
     toolchain = ":prometheus_toolchain",
-    toolchain_type = "@rules_prometheus//:prometheus_toolchain_type",
+    toolchain_type = "@io_bazel_rules_prometheus//:prometheus_toolchain_type",
 )

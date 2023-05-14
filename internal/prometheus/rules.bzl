@@ -3,7 +3,7 @@ load("@bazel_skylib//lib:shell.bzl", "shell")
 
 
 def _prometheus_rule_test_impl(ctx):
-  tool = ctx.toolchains["@rules_prometheus//:prometheus_toolchain_type"].promtool
+  tool = ctx.toolchains["@io_bazel_rules_prometheus//:prometheus_toolchain_type"].promtool
   cmd = tool.path + " test rules {flags} {rule_test}".format(
       srcs = " ".join([shell.quote(src.path) for src in ctx.files.srcs]),
       rule_test = shell.quote(ctx.file.rule_test.path),
@@ -34,6 +34,6 @@ prometheus_rule_test = rule(
        doc = "The flag list for promtool command"
     )
   },
-  toolchains=["@rules_prometheus//:prometheus_toolchain_type"],
+  toolchains=["@io_bazel_rules_prometheus//:prometheus_toolchain_type"],
   doc = "Checks a prometheus's config file",
 )

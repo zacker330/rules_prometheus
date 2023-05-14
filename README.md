@@ -13,7 +13,7 @@ alertmanager_register_toolchains(version = "0.24.0")
 
 
 ```python 
-load("@rules_prometheus//:def.bzl","alertmanager_config_test", "prometheus_rule_test", "alertmanager_route_test")
+load("@io_bazel_rules_prometheus//:def.bzl","alertmanager_config_test", "prometheus_rule_test", "alertmanager_route_test")
 
 alertmanager_config_test(
   name = "simple_test",

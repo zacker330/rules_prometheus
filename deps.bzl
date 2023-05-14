@@ -1,8 +1,8 @@
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
-load("//internal/prometheus:repos.bzl", "prometheus_download_rule")
-load("//internal/alertmanager:repos.bzl","alertmanager_download_rule")
-load("//internal/prometheus:prometheus_versions.bzl", "DEFAULT_AVAILABLE_PROMETHEUS_BINARIES")
-load("//internal/alertmanager:alertmanager_versions.bzl", "DEFAULT_AVAILABLE_ALERTMANAGER_BINARIES")
+load("@io_bazel_rules_prometheus//internal/prometheus:repos.bzl", "prometheus_download_rule")
+load("@io_bazel_rules_prometheus//internal/alertmanager:repos.bzl","alertmanager_download_rule")
+load("@io_bazel_rules_prometheus//internal/prometheus:prometheus_versions.bzl", "DEFAULT_AVAILABLE_PROMETHEUS_BINARIES")
+load("@io_bazel_rules_prometheus//internal/alertmanager:alertmanager_versions.bzl", "DEFAULT_AVAILABLE_ALERTMANAGER_BINARIES")
 
 
 

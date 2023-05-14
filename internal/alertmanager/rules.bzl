@@ -3,7 +3,7 @@ load("@bazel_skylib//lib:shell.bzl", "shell")
 
 
 def _alertmanager_config_test_impl(ctx):
-  tool = ctx.toolchains["@rules_prometheus//:alertmanager_toolchain_type"].amtool
+  tool = ctx.toolchains["@io_bazel_rules_prometheus//:alertmanager_toolchain_type"].amtool
   cmd = tool.path + " check-config {srcs}".format(
       srcs = " ".join([shell.quote(src.path) for src in ctx.files.srcs]),
   )
@@ -25,12 +25,12 @@ alertmanager_config_test = rule(
       doc = "alertmanager configs to check",
     ),
   },
-  toolchains=["@rules_prometheus//:alertmanager_toolchain_type"],
+  toolchains=["@io_bazel_rules_prometheus//:alertmanager_toolchain_type"],
   doc = "Checks a alertmanager's config file",
 )
 
 def _alertmanager_route_test_impl(ctx):
-  tool = ctx.toolchains["@rules_prometheus//:alertmanager_toolchain_type"].amtool
+  tool = ctx.toolchains["@io_bazel_rules_prometheus//:alertmanager_toolchain_type"].amtool
   cmd = tool.path + " config routes test --config.file={src} --tree --verify.receivers={exp_receivers} {label_matchs}".format(
       src = shell.quote(ctx.file.src.path),
       exp_receivers = ",".join([shell.quote(receiver) for receiver in ctx.attr.exp_receivers]),
@@ -64,6 +64,6 @@ alertmanager_route_test = rule(
 
     )
   },
-  toolchains=["@rules_prometheus//:alertmanager_toolchain_type"],
+  toolchains=["@io_bazel_rules_prometheus//:alertmanager_toolchain_type"],
   doc = "run amtool config routes test command"
 )

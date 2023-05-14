@@ -96,7 +96,7 @@ OS_ARCH = (
 
 def _generate_constraints(names, bazel_constraints):
     return {
-        name: bazel_constraints.get(name, "@rules_prometheus//internal/toolchain:" + name)
+        name: bazel_constraints.get(name, "@io_bazel_rules_prometheus//internal/toolchain:" + name)
         for name in names
     }
 
@@ -137,7 +137,7 @@ def declare_constraints():
     @bazel_tools//platforms:default_platform will be used most of the time).
     """
     for os, constraint in OS_CONSTRAINTS.items():
-        if constraint.startswith("@rules_prometheus//internal/toolchain:"):
+        if constraint.startswith("@io_bazel_rules_prometheus//internal/toolchain:"):
             native.constraint_value(
                 name = os,
                 constraint_setting = "@platforms//os:os",
@@ -149,7 +149,7 @@ def declare_constraints():
             )
 
     for arch, constraint in ARCH_CONSTRAINTS.items():
-        if constraint.startswith("@rules_prometheus//internal/toolchain:"):
+        if constraint.startswith("@io_bazel_rules_prometheus//internal/toolchain:"):
             native.constraint_value(
                 name = arch,
                 constraint_setting = "@platforms//cpu:cpu",

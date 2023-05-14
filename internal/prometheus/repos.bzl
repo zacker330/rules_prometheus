@@ -1,6 +1,6 @@
-load("//internal:platforms.bzl","detect_host_platform")
-load("//internal/prometheus:prometheus_versions.bzl", "DEFAULT_AVAILABLE_PROMETHEUS_BINARIES")
-load("//internal:platforms.bzl", "BAZEL_OS_CONSTRAINTS", "BAZEL_ARCH_CONSTRAINTS")
+load("@io_bazel_rules_prometheus//internal:platforms.bzl","detect_host_platform")
+load("@io_bazel_rules_prometheus//internal/prometheus:prometheus_versions.bzl", "DEFAULT_AVAILABLE_PROMETHEUS_BINARIES")
+load("@io_bazel_rules_prometheus//internal:platforms.bzl", "BAZEL_OS_CONSTRAINTS", "BAZEL_ARCH_CONSTRAINTS")
 
 
 def _prometheus_build_file(ctx, platform, version):
