@@ -1,6 +1,8 @@
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 load("//internal/prometheus:repos.bzl", "prometheus_download_rule")
 load("//internal/alertmanager:repos.bzl","alertmanager_download_rule")
+load("//internal/prometheus:prometheus_versions.bzl", "DEFAULT_AVAILABLE_PROMETHEUS_BINARIES")
+load("//internal/alertmanager:alertmanager_versions.bzl", "DEFAULT_AVAILABLE_ALERTMANAGER_BINARIES")
 
 
 
@@ -9,8 +11,6 @@ def _maybe(rule, name, **kwargs):
     """Declares an external repository if it hasn't been declared already."""
     if name not in native.existing_rules():
         rule(name = name, **kwargs)
-
-
 
 
 def rules_prometheus_dependencies():
@@ -25,24 +25,25 @@ def rules_prometheus_dependencies():
     )
 
 def prometheus_register_toolchains(version = None, urls = None):
-    prometheus_download_rule(name = "prometheus_register_toolchains", version=version, urls=urls)
-    native.register_toolchains(
-        "@prometheus_register_toolchains//:toolchain",
-    )
+    for key in DEFAULT_AVAILABLE_PROMETHEUS_BINARIES:
+        if key[0] != version:
+            pass
+        platform = key[1]
+        name = "prometheus_register_toolchains_" + platform
+        prometheus_download_rule(name = name, version=version, urls=urls)
+        native.register_toolchains(
+            "@"+ name +"//:toolchain",
+        )
 
 def alertmanager_register_toolchains(version = None, urls = None):
-    alertmanager_download_rule(name = "alertmanager_register_toolchains", version=version, urls=urls)
-    native.register_toolchains(
-        "@alertmanager_register_toolchains//:toolchain",
-    )
+    for key in DEFAULT_AVAILABLE_ALERTMANAGER_BINARIES:
+        if key[0] != version:
+            pass
+        platform = key[1]
+        name = "alertmanager_register_toolchains_" + platform
 
+        alertmanager_download_rule(name = name, version=version, urls=urls)
+        native.register_toolchains(
+            "@"+ name +"//:toolchain",
+        )
 
-    # _alertmanager_toolchains(
-    #     name = name + "_toolchains",
-    #     alertmanager_repo = name,
-    #     sdk_version = kwargs.get("version"),
-    #     goos = kwargs.get("goos"),
-    #     goarch = kwargs.get("goarch"),
-    # )
-    # if register_toolchains:
-    #     _register_toolchains(name)

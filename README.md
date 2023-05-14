@@ -1,8 +1,16 @@
 # Installation
 
+```python
 
+rules_prometheus_dependencies()
+prometheus_register_toolchains(version = "2.43.1")
+alertmanager_register_toolchains(version = "0.24.0")
+
+```
 
 # Usage
+
+
 
 ```python 
 load("@rules_prometheus//:def.bzl","alertmanager_config_test", "prometheus_rule_test", "alertmanager_route_test")

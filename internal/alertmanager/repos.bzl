@@ -3,21 +3,21 @@ load("//internal/alertmanager:alertmanager_versions.bzl", "DEFAULT_AVAILABLE_ALE
 
 
 def _alertmanager_build_file(ctx, platform, version):
-    goos, _, goarch = platform.partition("-")
-    if goos == "darwin":
+    os, _, arch = platform.partition("-")
+    if os == "darwin":
         os_constraint = "@platforms//os:osx"
-    elif goos == "linux":
+    elif os == "linux":
         os_constraint = "@platforms//os:linux"
-    elif goos == "windows":
+    elif os == "windows":
         os_constraint = "@platforms//os:windows"
     else:
-        fail("unsupported goos: " + goos)
-    if goarch == "amd64":
+        fail("unsupported os: " + os)
+    if arch == "amd64":
         arch_constraint = "@platforms//cpu:x86_64"
-    elif goarch == "arm64":
+    elif arch == "arm64":
         arch_constraint = "@platforms//cpu:arm64"
     else:
-        fail("unsupported arch: " + goarch)
+        fail("unsupported arch: " + arch)
     constraints = [os_constraint, arch_constraint]
     constraint_str = ",\n        ".join(['"%s"' % c for c in constraints])
     ctx.template(
@@ -25,9 +25,9 @@ def _alertmanager_build_file(ctx, platform, version):
         ctx.path(ctx.attr._build_file),
         executable = False,
         substitutions = {
-            "{goos}": goos,
-            "{goarch}": goarch,
-            "{exe}": ".exe" if goos == "windows" else "",
+            "{os}": os,
+            "{arch}": arch,
+            "{exe}": ".exe" if os == "windows" else "",
             "{exec_constraints}": constraint_str,
             "{target_constraints}": constraint_str,
         }
@@ -70,15 +70,15 @@ def _format_url(version, platform, url):
     return whole_url
 
 def _alertmanager_download_rule_impl(ctx):
-    if not ctx.attr.goos and not ctx.attr.goarch:
-        goos, goarch = detect_host_platform(ctx)
+    if not ctx.attr.os and not ctx.attr.arch:
+        os, arch = detect_host_platform(ctx)
     else:
-        if not ctx.attr.goos:
-            fail("goarch set but goos not set")
-        if not ctx.attr.goarch:
-            fail("goos set but goarch not set")
-        goos, goarch = ctx.attr.goos, ctx.attr.goarch
-    platform = goos + "-" + goarch
+        if not ctx.attr.os:
+            fail("arch set but os not set")
+        if not ctx.attr.arch:
+            fail("os set but arch not set")
+        os, arch = ctx.attr.os, ctx.attr.arch
+    platform = os + "-" + arch
 
     version = ctx.attr.version
 
@@ -91,8 +91,8 @@ def _alertmanager_download_rule_impl(ctx):
 
     return {
             "name": ctx.attr.name,
-            "goos": ctx.attr.goos,
-            "goarch": ctx.attr.goarch,
+            "os": ctx.attr.os,
+            "arch": ctx.attr.arch,
             "urls": ctx.attr.urls,
             "version": version,
             "strip_prefix": ctx.attr.strip_prefix,
@@ -101,8 +101,8 @@ def _alertmanager_download_rule_impl(ctx):
 alertmanager_download_rule = repository_rule(
     implementation = _alertmanager_download_rule_impl,
     attrs = {
-        "goos": attr.string(),
-        "goarch": attr.string(),
+        "os": attr.string(),
+        "arch": attr.string(),
         "urls": attr.string_list(default = ["https://github.com/prometheus/alertmanager/releases/download/v{}/alertmanager-{}.{}.tar.gz"]),
         "version": attr.string(),
         "strip_prefix": attr.string(default = "alertmanager"),

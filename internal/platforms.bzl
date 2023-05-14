@@ -1,22 +1,22 @@
 def detect_host_platform(ctx):
-    goos = ctx.os.name
-    if goos == "mac os x":
-        goos = "darwin"
-    elif goos.startswith("windows"):
-        goos = "windows"
+    os = ctx.os.name
+    if os == "mac os x":
+        os = "darwin"
+    elif os.startswith("windows"):
+        os = "windows"
 
-    goarch = ctx.os.environ.get("PROCESSOR_ARCHITECTURE")
-    if goos == "darwin":
-        goarch = ctx.os.arch
+    arch = ctx.os.environ.get("PROCESSOR_ARCHITECTURE")
+    if os == "darwin":
+        arch = ctx.os.arch
 
-    if goarch == "aarch64":
-        goarch = "arm64"
-    elif goarch == "x86_64":
-        goarch = "amd64"
+    if arch == "aarch64":
+        arch = "arm64"
+    elif arch == "x86_64":
+        arch = "amd64"
 
-    return goos, goarch
+    return os, arch
 
-BAZEL_GOOS_CONSTRAINTS = {
+BAZEL_OS_CONSTRAINTS = {
     "darwin": "@platforms//os:osx",
     "freebsd": "@platforms//os:freebsd",
     "ios": "@platforms//os:ios",
@@ -24,7 +24,7 @@ BAZEL_GOOS_CONSTRAINTS = {
     "windows": "@platforms//os:windows",
 }
 
-BAZEL_GOARCH_CONSTRAINTS = {
+BAZEL_ARCH_CONSTRAINTS = {
     "386": "@platforms//cpu:x86_32",
     "amd64": "@platforms//cpu:x86_64",
     "arm": "@platforms//cpu:arm",
@@ -34,7 +34,7 @@ BAZEL_GOARCH_CONSTRAINTS = {
     "s390x": "@platforms//cpu:s390x",
 }
 
-GOOS_GOARCH = (
+OS_ARCH = (
     ("aix", "ppc64"),
     ("darwin", "386"),
     ("darwin", "amd64"),
@@ -87,20 +87,20 @@ def _generate_constraints(names, bazel_constraints):
         for name in names
     }
 
-GOOS_CONSTRAINTS = _generate_constraints([p[0] for p in GOOS_GOARCH], BAZEL_GOOS_CONSTRAINTS)
-GOARCH_CONSTRAINTS = _generate_constraints([p[1] for p in GOOS_GOARCH], BAZEL_GOARCH_CONSTRAINTS)
+OS_CONSTRAINTS = _generate_constraints([p[0] for p in OS_ARCH], BAZEL_OS_CONSTRAINTS)
+ARCH_CONSTRAINTS = _generate_constraints([p[1] for p in OS_ARCH], BAZEL_ARCH_CONSTRAINTS)
 
 def _generate_platforms():
     platforms = []
-    for goos, goarch in GOOS_GOARCH:
+    for os, arch in OS_ARCH:
         constraints = [
-            GOOS_CONSTRAINTS[goos],
-            GOARCH_CONSTRAINTS[goarch],
+            OS_CONSTRAINTS[os],
+            ARCH_CONSTRAINTS[arch],
         ]
         platforms.append(struct(
-            name = goos + "_" + goarch,
-            goos = goos,
-            goarch = goarch,
+            name = os + "_" + arch,
+            os = os,
+            arch = arch,
             constraints = constraints,
             cgo = False,
         ))
@@ -113,38 +113,38 @@ PLATFORMS = _generate_platforms()
 def declare_constraints():
     """Generates constraint_values and platform targets for valid platforms.
 
-    Each constraint_value corresponds to a valid goos or goarch.
-    The goos and goarch values belong to the constraint_settings
+    Each constraint_value corresponds to a valid os or arch.
+    The os and arch values belong to the constraint_settings
     @platforms//os:os and @platforms//cpu:cpu, respectively.
     To avoid redundancy, if there is an equivalent value in @platforms,
     we define an alias here instead of another constraint_value.
 
-    Each platform defined here selects a goos and goarch constraint value.
+    Each platform defined here selects a os and arch constraint value.
     These platforms may be used with --platforms for cross-compilation,
     though users may create their own platforms (and
     @bazel_tools//platforms:default_platform will be used most of the time).
     """
-    for goos, constraint in GOOS_CONSTRAINTS.items():
+    for os, constraint in OS_CONSTRAINTS.items():
         if constraint.startswith("@rules_prometheus//internal/toolchain:"):
             native.constraint_value(
-                name = goos,
+                name = os,
                 constraint_setting = "@platforms//os:os",
             )
         else:
             native.alias(
-                name = goos,
+                name = os,
                 actual = constraint,
             )
 
-    for goarch, constraint in GOARCH_CONSTRAINTS.items():
+    for arch, constraint in ARCH_CONSTRAINTS.items():
         if constraint.startswith("@rules_prometheus//internal/toolchain:"):
             native.constraint_value(
-                name = goarch,
+                name = arch,
                 constraint_setting = "@platforms//cpu:cpu",
             )
         else:
             native.alias(
-                name = goarch,
+                name = arch,
                 actual = constraint,
             )
 
