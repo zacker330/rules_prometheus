@@ -1,4 +1,5 @@
 load("@io_bazel_rules_prometheus//:def.bzl","alertmanager_config_test", "prometheus_rule_test", "alertmanager_route_test")
+load("@io_bazel_rules_jsonnet//jsonnet:jsonnet.bzl", "jsonnet_to_json")
 
 alertmanager_config_test(
   name = "simple_test",
@@ -16,4 +17,14 @@ prometheus_rule_test(
   name = "prometheus_test",
   srcs = ["prometheus-sample.yaml"],
   rule_test = "promtool-rule.yaml",
+)
+
+
+jsonnet_to_json(
+    name = "shell-workflows",
+    src = "jsonnet-test.jsonnet",
+    # deps = [":shell-workflows-lib"],
+    outs = [
+        "wordcount-workflow.json",
+    ],
 )

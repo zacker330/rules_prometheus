@@ -42,7 +42,7 @@ jsonnet_go_repositories()
 
 load("@google_jsonnet_go//bazel:deps.bzl", "jsonnet_go_dependencies")
 
-jsonnet_go_dependencies(go_sdk_version='1.18.2')
+jsonnet_go_dependencies(go_sdk_version='1.18.5')
 
 
 rules_prometheus_dependencies()
