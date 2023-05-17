@@ -1,3 +1,0 @@
-# load("//internal:platforms.bzl","declare_constraints")
-
-# declare_constraints()

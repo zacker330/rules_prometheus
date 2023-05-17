@@ -4,8 +4,8 @@ load("@bazel_skylib//lib:shell.bzl", "shell")
 
 def _alertmanager_config_test_impl(ctx):
   tool = ctx.toolchains["@io_bazel_rules_prometheus//:alertmanager_toolchain_type"].amtool
-  cmd = tool.path + " check-config {srcs}".format(
-      srcs = " ".join([shell.quote(src.path) for src in ctx.files.srcs]),
+  cmd = tool.short_path + " check-config {srcs}".format(
+      srcs = " ".join([shell.quote(src.short_path) for src in ctx.files.srcs]),
   )
   executable = ctx.actions.declare_file(ctx.label.name)
   ctx.actions.write(
@@ -31,8 +31,8 @@ alertmanager_config_test = rule(
 
 def _alertmanager_route_test_impl(ctx):
   tool = ctx.toolchains["@io_bazel_rules_prometheus//:alertmanager_toolchain_type"].amtool
-  cmd = tool.path + " config routes test --config.file={src} --tree --verify.receivers={exp_receivers} {label_matchs}".format(
-      src = shell.quote(ctx.file.src.path),
+  cmd = tool.short_path + " config routes test --config.file={src} --tree --verify.receivers={exp_receivers} {label_matchs}".format(
+      src = shell.quote(ctx.file.src.short_path),
       exp_receivers = ",".join([shell.quote(receiver) for receiver in ctx.attr.exp_receivers]),
       label_matchs= " ".join([shell.quote(label) for label in ctx.attr.match_labels]),
   )

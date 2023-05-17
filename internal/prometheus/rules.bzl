@@ -4,9 +4,9 @@ load("@bazel_skylib//lib:shell.bzl", "shell")
 
 def _prometheus_rule_test_impl(ctx):
   tool = ctx.toolchains["@io_bazel_rules_prometheus//:prometheus_toolchain_type"].promtool
-  cmd = tool.path + " test rules {flags} {rule_test}".format(
-      srcs = " ".join([shell.quote(src.path) for src in ctx.files.srcs]),
-      rule_test = shell.quote(ctx.file.rule_test.path),
+  cmd = tool.short_path + " test rules {flags} {rule_test}".format(
+      srcs = " ".join([shell.quote(src.short_path) for src in ctx.files.srcs]),
+      rule_test = shell.quote(ctx.file.rule_test.short_path),
       flags = " ".join([shell.quote(flag) for flag in ctx.attr.flags])
   )
   executable = ctx.actions.declare_file(ctx.label.name)
