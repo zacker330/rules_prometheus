@@ -48,9 +48,4 @@ prometheus_rule_test(
 )
 ```
 
-# Troubleshooting
-
-### Build issue on Mac
-```shell
-ERROR: /private/var/tmp/_bazel_jack/ba2f5c04be2481dd8592268eb6d0aa33/external/org_golang_x_sys/unix/BUILD.bazel:3:11: GoCompilePkg external/org_golang_x_sys/unix/unix.a [for tool] failed: (Exit 1): builder failed: error executing command (from target @org_golang_x_sys//unix:unix) bazel-out/darwin-opt-exec-2B5CBBC6/bin/external/go_sdk/builder compilepkg -sdk external/go_sdk -installsuffix darwin_amd64 -src external/org_golang_x_sys/unix/affinity_linux.go -src ... (remaining 553 arguments skipped)
-```
+May be you would like to use Jsonnet format instead of YAML or JSON format as the configuration of Promtheus or Alertmanager. There're a few examples in `examples` folder, you can have a look at that.
