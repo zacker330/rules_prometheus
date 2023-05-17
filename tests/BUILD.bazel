@@ -2,12 +2,12 @@ load("@io_bazel_rules_prometheus//:def.bzl","alertmanager_config_test", "prometh
 
 alertmanager_config_test(
   name = "simple_test",
-  srcs = ["simple.yaml","simple2.json"],
+  srcs = ["alertmanager_config.yaml","alertmanager_config.json"],
 )
 
 alertmanager_route_test(
   name = "route_test",
-  src = "simple.yaml",
+  src = "alertmanager_config.yaml",
   exp_receivers = ["team-X-pager"],
   match_labels = ["service=database", "owner=team-X"]
 )

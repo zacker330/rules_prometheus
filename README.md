@@ -47,3 +47,5 @@ prometheus_rule_test(
   rule_test = "promtool-rule.yaml",
 )
 ```
+
+May be you would like to use Jsonnet format instead of YAML or JSON format as the configuration of Promtheus or Alertmanager. There're a few examples in `examples` folder, you can have a look at that.

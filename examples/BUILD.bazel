@@ -1,0 +1,63 @@
+package(default_visibility = ["//visibility:public"])
+
+load("@io_bazel_rules_prometheus//:def.bzl","alertmanager_config_test", "prometheus_rule_test", "alertmanager_route_test")
+load("@io_bazel_rules_jsonnet//jsonnet:jsonnet.bzl", "jsonnet_to_json")
+
+jsonnet_to_json(
+    name = "alertmanager_jsonnet",
+    src = "alertmanager_jsonnet.jsonnet",
+    outs = [
+        "alertmanager.json",
+    ],
+)
+
+jsonnet_to_json(
+    name = "alertmanager_jsonnet_multiple",
+    src = "alertmanager_jsonnet_multiple.jsonnet",
+    outs = [
+        "config1.json",
+        "config2.json",
+    ],
+    multiple_outputs = True,
+)
+
+jsonnet_to_json(
+    name = "prometheus_rule_jsonnet",
+    src = "prometheus_rule_jsonnet.jsonnet",
+    outs = [
+        "prometheus_rule_jsonnet.json",
+    ],
+)
+
+jsonnet_to_json(
+    name = "prometheus_rule_testcases_jsonnet",
+    src = "prometheus_rule_testcases.jsonnet",
+    outs = [
+        "prometheus_rule_testcases.json",
+    ],
+)
+
+alertmanager_route_test(
+  name = "route_jsonnet_test",
+  src = ":alertmanager_jsonnet",
+  exp_receivers = ["team-X-pager"],
+  match_labels = ["service=database", "owner=team-X"]
+)
+
+prometheus_rule_test(
+  name = "prometheus_rule_jsonnet_test",
+  srcs = [":prometheus_rule_jsonnet"],
+  rule_test = ":prometheus_rule_testcases_jsonnet",
+)
+
+alertmanager_config_test(
+  name = "alertmanager_jsonnet_multiple_test",
+  srcs = [":alertmanager_jsonnet_multiple"],
+)
+
+
+
+alertmanager_config_test(
+  name = "alertmanager_jsonnet_test",
+  srcs = [":alertmanager_jsonnet"],
+)
