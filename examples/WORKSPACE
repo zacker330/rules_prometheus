@@ -153,7 +153,13 @@ go_repository(
     version = "v1.1.0",
 )
 
-local_repository(
-    name = "examples",
-    path = "examples",
+http_archive(
+    name = "io_bazel_rules_prometheus",
+    sha256 = "f389ea769e8192a185c8f6216f8535a7eef3d64b619abcc61d56800f39ac62a3",
+    urls = ["https://github.com/zacker330/rules_prometheus/releases/download/v0.0.2/rules_prometheus.tar.gz"],
 )
+
+load("@io_bazel_rules_prometheus//:deps.bzl", "rules_prometheus_dependencies", "prometheus_register_toolchains", "alertmanager_register_toolchains")
+rules_prometheus_dependencies()
+prometheus_register_toolchains(version = "2.43.1")
+alertmanager_register_toolchains(version = "0.24.0")
