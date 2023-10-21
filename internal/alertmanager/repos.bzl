@@ -57,7 +57,8 @@ def _format_url(version, platform, url):
     return whole_url
 
 def _alertmanager_download_rule_impl(ctx):
-    os, arch = ctx.attr.os, ctx.attr.arch
+    os, arch = detect_host_platform(ctx)
+#    os, arch = ctx.attr.os, ctx.attr.arch
     platform = os + "-" + arch
 
     version = ctx.attr.version

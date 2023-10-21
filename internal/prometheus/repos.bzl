@@ -6,7 +6,6 @@ load("@io_bazel_rules_prometheus//internal:platforms.bzl", "BAZEL_OS_CONSTRAINTS
 def _prometheus_build_file(ctx, platform, version):
     os, _, arch = platform.partition("-")
 
-
     constraints = [BAZEL_OS_CONSTRAINTS[os], BAZEL_ARCH_CONSTRAINTS[arch]]
 
     constraint_str = ",\n        ".join(['"%s"' % c for c in constraints])
@@ -60,14 +59,15 @@ def _format_url(version, platform, url):
     return whole_url
 
 def _prometheus_download_rule_impl(ctx):
-    if not ctx.attr.os and not ctx.attr.arch:
-        os, arch = detect_host_platform(ctx)
-    else:
-        if not ctx.attr.os:
-            fail("arch set but os not set")
-        if not ctx.attr.arch:
-            fail("os set but arch not set")
-    # os, arch = ctx.attr.os, ctx.attr.arch
+    os, arch = detect_host_platform(ctx)
+#    if not ctx.attr.os and not ctx.attr.arch:
+#        os, arch = detect_host_platform(ctx)
+#    else:
+#        if not ctx.attr.os:
+#            fail("arch set but os not set")
+#        if not ctx.attr.arch:
+#            fail("os set but arch not set")
+#    os, arch = ctx.attr.os, ctx.attr.arch
     platform = os + "-" + arch
 
     version = ctx.attr.version
